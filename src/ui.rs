@@ -35,10 +35,14 @@ pub fn confirm_rename(original: &str, proposed: &str) -> Result<UserChoice> {
 
 /// Prompt the user to edit the proposed filename
 /// Returns the edited filename
+/// The current filename is pre-filled for editing
 pub fn edit_filename(proposed: &str) -> Result<String> {
+    println!("\nEdit the filename below (current filename is pre-filled):");
+
     let edited: String = Input::with_theme(&ColorfulTheme::default())
-        .with_prompt("Edit filename")
+        .with_prompt("Filename")
         .default(proposed.to_string())
+        .allow_empty(false)
         .interact_text()?;
 
     Ok(edited)
