@@ -59,7 +59,7 @@ pub fn edit_filename(proposed: &str) -> Result<String> {
         .allow_empty(false)
         .interact_text()?;
 
-    Ok(edited)
+    Ok(edited.trim().to_string())
 }
 
 /// Ask if the user wants to enter metadata manually
@@ -107,7 +107,7 @@ pub fn edit_author(current: &str) -> Result<String> {
         .allow_empty(false)
         .interact_text()?;
 
-    Ok(edited)
+    Ok(edited.trim().to_string())
 }
 
 /// Prompt the user to edit the year
@@ -122,7 +122,7 @@ pub fn edit_year(current: &str) -> Result<String> {
         .allow_empty(false)
         .interact_text()?;
 
-    Ok(edited)
+    Ok(edited.trim().to_string())
 }
 
 /// Prompt the user to edit the title
@@ -137,7 +137,7 @@ pub fn edit_title(current: &str) -> Result<String> {
         .allow_empty(false)
         .interact_text()?;
 
-    Ok(edited)
+    Ok(edited.trim().to_string())
 }
 
 /// Create a spinner with a custom message
