@@ -16,7 +16,7 @@ struct Args {
     file_path: String,
 
     /// Ollama model to use for metadata extraction
-    #[arg(short, long, default_value = "llama3.2")]
+    #[arg(short, long, default_value = "llama3.2:latest")]
     model: String,
 }
 
