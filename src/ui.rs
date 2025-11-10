@@ -6,15 +6,25 @@ pub enum UserChoice {
     Yes,
     No,
     Edit,
+    EditAuthor,
+    EditYear,
+    EditTitle,
 }
 
 /// Prompt the user to confirm the rename operation
-/// Returns the user's choice: Yes, No, or Edit
+/// Returns the user's choice: Yes, No, Edit, EditAuthor, EditYear, or EditTitle
 pub fn confirm_rename(original: &str, proposed: &str) -> Result<UserChoice> {
     println!("\nProposed filename: {}", proposed);
     println!();
 
-    let choices = vec!["Yes - rename the file", "No - cancel", "Edit - modify filename"];
+    let choices = vec![
+        "Yes - rename the file",
+        "No - cancel",
+        "Edit filename - modify the complete filename",
+        "Edit author - change the author name",
+        "Edit year - change the publication year",
+        "Edit title - change the paper title",
+    ];
 
     let selection = Select::with_theme(&ColorfulTheme::default())
         .with_prompt(&format!(
@@ -29,6 +39,9 @@ pub fn confirm_rename(original: &str, proposed: &str) -> Result<UserChoice> {
         0 => UserChoice::Yes,
         1 => UserChoice::No,
         2 => UserChoice::Edit,
+        3 => UserChoice::EditAuthor,
+        4 => UserChoice::EditYear,
+        5 => UserChoice::EditTitle,
         _ => unreachable!(),
     })
 }
@@ -79,4 +92,49 @@ pub fn display_cancelled() {
 /// Display error message
 pub fn display_error(error: &str) {
     eprintln!("\n⚠ Error: {}", error);
+}
+
+/// Prompt the user to edit the author
+/// Returns the edited author name
+/// The current author is pre-filled for editing
+pub fn edit_author(current: &str) -> Result<String> {
+    println!("\nEdit the author (last name only):");
+
+    let edited: String = Input::with_theme(&ColorfulTheme::default())
+        .with_prompt("Author")
+        .with_initial_text(current)
+        .allow_empty(false)
+        .interact_text()?;
+
+    Ok(edited)
+}
+
+/// Prompt the user to edit the year
+/// Returns the edited year
+/// The current year is pre-filled for editing
+pub fn edit_year(current: &str) -> Result<String> {
+    println!("\nEdit the publication year:");
+
+    let edited: String = Input::with_theme(&ColorfulTheme::default())
+        .with_prompt("Year")
+        .with_initial_text(current)
+        .allow_empty(false)
+        .interact_text()?;
+
+    Ok(edited)
+}
+
+/// Prompt the user to edit the title
+/// Returns the edited title
+/// The current title is pre-filled for editing
+pub fn edit_title(current: &str) -> Result<String> {
+    println!("\nEdit the paper title:");
+
+    let edited: String = Input::with_theme(&ColorfulTheme::default())
+        .with_prompt("Title")
+        .with_initial_text(current)
+        .allow_empty(false)
+        .interact_text()?;
+
+    Ok(edited)
 }

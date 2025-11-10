@@ -61,7 +61,7 @@ fn run() -> Result<()> {
 
     // Step 3: Extract metadata using LLM
     println!("Extracting metadata using LLM...");
-    let metadata = llm::extract_metadata_with_ollama(&pdf_text, &model)
+    let mut metadata = llm::extract_metadata_with_ollama(&pdf_text, &model)
         .context("Failed to extract metadata using LLM")?;
 
     // Display the extracted metadata
@@ -101,6 +101,36 @@ fn run() -> Result<()> {
                 if !proposed_filename.ends_with(".pdf") {
                     proposed_filename.push_str(".pdf");
                 }
+            }
+            ui::UserChoice::EditAuthor => {
+                // Let user edit the author
+                metadata.first_author = ui::edit_author(&metadata.first_author)?;
+
+                // Display updated metadata
+                ui::display_metadata(&metadata.first_author, &metadata.year, &metadata.title);
+
+                // Regenerate filename with updated metadata
+                proposed_filename = filename::generate_filename(&metadata);
+            }
+            ui::UserChoice::EditYear => {
+                // Let user edit the year
+                metadata.year = ui::edit_year(&metadata.year)?;
+
+                // Display updated metadata
+                ui::display_metadata(&metadata.first_author, &metadata.year, &metadata.title);
+
+                // Regenerate filename with updated metadata
+                proposed_filename = filename::generate_filename(&metadata);
+            }
+            ui::UserChoice::EditTitle => {
+                // Let user edit the title
+                metadata.title = ui::edit_title(&metadata.title)?;
+
+                // Display updated metadata
+                ui::display_metadata(&metadata.first_author, &metadata.year, &metadata.title);
+
+                // Regenerate filename with updated metadata
+                proposed_filename = filename::generate_filename(&metadata);
             }
         }
     }
