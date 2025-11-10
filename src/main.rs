@@ -34,10 +34,10 @@ fn run() -> Result<()> {
     let original_filename = renamer::get_filename(&args.file_path)?;
 
     // Step 1: Detect which Ollama model to use
-    println!("Detecting available Ollama model...");
+    let spinner = ui::create_spinner("Detecting available Ollama model...");
     let model = llm::detect_ollama_model()
         .context("Failed to detect Ollama model")?;
-    println!("Using model: {}", model);
+    ui::finish_spinner(spinner, &format!("Using model: {}", model));
 
     println!("\nAnalyzing PDF...");
 
@@ -60,9 +60,10 @@ fn run() -> Result<()> {
     };
 
     // Step 3: Extract metadata using LLM
-    println!("Extracting metadata using LLM...");
+    let spinner = ui::create_spinner("Extracting metadata using LLM...");
     let metadata = llm::extract_metadata_with_ollama(&pdf_text, &model)
         .context("Failed to extract metadata using LLM")?;
+    ui::finish_spinner(spinner, "Metadata extracted successfully");
 
     // Display the extracted metadata
     ui::display_metadata(&metadata.first_author, &metadata.year, &metadata.title);
