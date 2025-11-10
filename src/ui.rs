@@ -1,5 +1,6 @@
 use anyhow::Result;
 use dialoguer::{theme::ColorfulTheme, Confirm, Input, Select};
+use indicatif::{ProgressBar, ProgressStyle};
 
 #[derive(Debug, PartialEq)]
 pub enum UserChoice {
@@ -79,4 +80,26 @@ pub fn display_cancelled() {
 /// Display error message
 pub fn display_error(error: &str) {
     eprintln!("\n⚠ Error: {}", error);
+}
+
+/// Create a spinner with a custom message
+/// Returns a ProgressBar that should be finished when the operation completes
+pub fn create_spinner(message: &str) -> ProgressBar {
+    let spinner = ProgressBar::new_spinner();
+    spinner.set_style(
+        ProgressStyle::default_spinner()
+            .tick_strings(&[
+                "⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"
+            ])
+            .template("{spinner:.cyan} {msg}")
+            .unwrap(),
+    );
+    spinner.set_message(message.to_string());
+    spinner.enable_steady_tick(std::time::Duration::from_millis(80));
+    spinner
+}
+
+/// Finish a spinner with a success message
+pub fn finish_spinner(spinner: ProgressBar, message: &str) {
+    spinner.finish_with_message(format!("✓ {}", message));
 }
