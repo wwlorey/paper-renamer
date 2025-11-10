@@ -22,6 +22,88 @@ struct OllamaResponse {
     response: String,
 }
 
+#[derive(Debug, Deserialize)]
+struct RunningModel {
+    name: String,
+}
+
+#[derive(Debug, Deserialize)]
+struct RunningModelsResponse {
+    models: Vec<RunningModel>,
+}
+
+#[derive(Debug, Deserialize)]
+struct AvailableModel {
+    name: String,
+}
+
+#[derive(Debug, Deserialize)]
+struct AvailableModelsResponse {
+    models: Vec<AvailableModel>,
+}
+
+/// Detect which Ollama model to use
+/// First checks for running models, then falls back to available models
+pub fn detect_ollama_model() -> Result<String> {
+    let client = Client::new();
+
+    // Try to connect to Ollama first
+    let health_check = client
+        .get("http://localhost:11434/api/tags")
+        .send();
+
+    if health_check.is_err() {
+        anyhow::bail!(
+            "Cannot connect to Ollama. Please start Ollama first:\n\n\
+            1. If Ollama is not installed, visit: https://ollama.ai\n\
+            2. If Ollama is installed, start it with: ollama serve\n\
+            3. Then pull a model, for example: ollama pull llama3.2"
+        );
+    }
+
+    // First, try to find a running model
+    if let Ok(response) = client
+        .get("http://localhost:11434/api/ps")
+        .send()
+    {
+        if response.status().is_success() {
+            if let Ok(running_models) = response.json::<RunningModelsResponse>() {
+                if !running_models.models.is_empty() {
+                    return Ok(running_models.models[0].name.clone());
+                }
+            }
+        }
+    }
+
+    // If no models are running, check available models and load the first one
+    let response = client
+        .get("http://localhost:11434/api/tags")
+        .send()
+        .context("Failed to get available models from Ollama")?;
+
+    if !response.status().is_success() {
+        anyhow::bail!("Failed to query Ollama models");
+    }
+
+    let available_models: AvailableModelsResponse = response
+        .json()
+        .context("Failed to parse available models response")?;
+
+    if available_models.models.is_empty() {
+        anyhow::bail!(
+            "No Ollama models are installed. Please install a model first:\n\n\
+            For example:\n\
+            - ollama pull llama3.2\n\
+            - ollama pull llama3.2-vision\n\
+            - ollama pull mistral\n\n\
+            Visit https://ollama.ai/library for more models"
+        );
+    }
+
+    // Return the first available model
+    Ok(available_models.models[0].name.clone())
+}
+
 /// Extract paper metadata using Ollama LLM
 pub fn extract_metadata_with_ollama(pdf_text: &str, model: &str) -> Result<PaperMetadata> {
     let client = Client::new();

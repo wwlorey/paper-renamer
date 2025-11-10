@@ -52,19 +52,18 @@ The binary will be available at `target/release/paper-renamer`.
 paper-renamer path/to/paper.pdf
 ```
 
-### Specify a different model
-
-```bash
-paper-renamer path/to/paper.pdf --model llama3.2
-```
+The application will automatically detect and use any available Ollama model.
 
 ### Example interaction
 
 ```
 $ paper-renamer "Attention Is All You Need.pdf"
 
+Detecting available Ollama model...
+Using model: llama3.2
+
 Analyzing PDF...
-Extracting metadata using LLM (model: llama3.2)...
+Extracting metadata using LLM...
 
 Extracted metadata:
   - First Author: Vaswani
@@ -103,28 +102,43 @@ The application follows this standardized naming convention:
 
 ### Supported Ollama models
 
-The application works with any Ollama model that supports JSON output. Recommended models:
-- `llama3.2` (default, fast and accurate)
+The application automatically detects and uses any available Ollama model. It works with any model that supports JSON output. Recommended models:
+- `llama3.2` (fast and accurate)
 - `llama3.1`
 - `mistral`
 - `phi3`
+
+The application will:
+1. First check for any models currently running
+2. If no models are running, it will use any installed model
+3. If no models are installed, it will provide clear instructions on how to install one
 
 ### Command-line options
 
 ```
 Options:
-  -m, --model <MODEL>  Ollama model to use for metadata extraction [default: llama3.2]
   -h, --help           Print help
 ```
 
 ## Troubleshooting
 
-### "Failed to send request to Ollama"
+### "Cannot connect to Ollama"
 
 Make sure Ollama is running:
 ```bash
 ollama serve
 ```
+
+If Ollama is not installed, visit https://ollama.ai to download it.
+
+### "No Ollama models are installed"
+
+Install a model using:
+```bash
+ollama pull llama3.2
+```
+
+For more models, visit https://ollama.ai/library
 
 ### "No text could be extracted from the PDF"
 
@@ -132,7 +146,7 @@ The PDF may be a scanned image. Future versions will support OCR for scanned doc
 
 ### LLM returns incorrect metadata
 
-Try a different model with the `--model` flag, or use the Edit option to manually correct the filename.
+Use the Edit option to manually correct the filename. The application automatically selects an available model, but you may want to try different models by pulling them with `ollama pull <model-name>`.
 
 ## Development
 
