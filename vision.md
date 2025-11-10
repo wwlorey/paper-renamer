@@ -69,33 +69,41 @@ rename article.pdf
 
 ### Technology Stack (Proposed)
 
-- **Language**: Python
-  - Rich ecosystem for PDF processing
-  - Good LLM library support
-  - Easy CLI development
+- **Language**: Rust
+  - Excellent performance for PDF processing
+  - Memory safety without garbage collection
+  - Single binary distribution (no runtime dependencies)
+  - Strong type system and error handling
+  - Easy cross-platform compilation
 
-- **Key Libraries**:
-  - `PyPDF2` or `pdfplumber`: PDF text extraction
-  - `ollama-python` or `llama-cpp-python`: Local LLM inference
-  - `click` or `typer`: CLI framework
-  - `inquirer` or `questionary`: Interactive prompts
+- **Key Libraries (Crates)**:
+  - `pdf-extract` or `lopdf`: PDF text extraction
+  - `ollama-rs` or `reqwest`: Ollama API integration
+  - `clap`: CLI framework and argument parsing
+  - `dialoguer` or `inquire`: Interactive prompts
+  - `serde` and `serde_json`: JSON serialization for LLM API
+  - `anyhow` or `thiserror`: Error handling
+  - `tokio`: Async runtime for API calls
 
 ### LLM Options
 
 1. **Ollama** (Recommended)
    - Easy to install and use
-   - Supports various models (llama, mistral, etc.)
-   - Simple Python API
+   - Supports various models (llama, mistral, phi, etc.)
+   - Simple HTTP REST API (easy to integrate with Rust)
    - Model runs locally
+   - Good performance and model selection
 
-2. **llama.cpp**
+2. **llama.cpp with HTTP server**
    - Lightweight C++ implementation
-   - Python bindings available
-   - Good performance
+   - Can run as HTTP server
+   - Excellent performance
+   - Direct Rust bindings available via `llama-cpp-rs`
 
-3. **GPT4All**
-   - User-friendly local LLM
-   - Multiple model support
+3. **Direct HTTP API**
+   - Any local LLM with HTTP interface
+   - Use `reqwest` crate for API calls
+   - Maximum flexibility
 
 ## Implementation Phases
 
