@@ -22,8 +22,7 @@ A Rust-based terminal application that automatically renames academic paper PDFs
 
 2. **Ollama** - Local LLM runtime
    ```bash
-   # macOS/Linux
-   curl -fsSL https://ollama.com/install.sh | sh
+   brew install ollama
 
    # Start Ollama service
    ollama serve
@@ -43,6 +42,8 @@ cargo build --release
 ```
 
 The binary will be available at `target/release/paper-renamer`.
+
+To install globally, run `cargo install --path .` which installs to `~/.cargo/bin/`.
 
 ## Usage
 
