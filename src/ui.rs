@@ -41,7 +41,7 @@ pub fn edit_filename(proposed: &str) -> Result<String> {
 
     let edited: String = Input::with_theme(&ColorfulTheme::default())
         .with_prompt("Filename")
-        .default(proposed.to_string())
+        .with_initial_text(proposed)
         .allow_empty(false)
         .interact_text()?;
 
