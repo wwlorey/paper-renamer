@@ -1,4 +1,4 @@
-# PAPER RENAMER - VISION DOCUMENT
+# Paper Renamer - Vision Document
 
 ## Overview
 
